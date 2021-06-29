@@ -1,5 +1,12 @@
+print("Das hat mir jetzt nicht so gefallen...")
 
-x = 1 + 2
+def my_sum(a,b):
+    x = a + b
+    return x
 
-print("The number is: " + str(x))
+number = my_sum(1,2)
+
+print("The number is: " + str(number))
+
+
 
