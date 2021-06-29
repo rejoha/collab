@@ -1,0 +1,5 @@
+echo '.idea' >> .gitignore
+git rm -r --cached .idea
+git add .gitignore
+git commit -m '.idea removed'
+git push
