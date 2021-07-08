@@ -1,5 +1,5 @@
 import bokeh as bokeh
-import descartes as descartes
+# import descartes as descartes
 import matplotlib.pyplot as plt
 import pandas as pd
 import geopandas
@@ -9,16 +9,16 @@ import numpy
 
 
 # Load point data
-path_to_trees = 'Baumstandort.csv'
+path_to_trees = 'data/Baumstandort.csv'
 gdf_trees = geopandas.read_file(path_to_trees, GEOM_POSSIBLE_NAMES="geometry", KEEP_GEOM_COLUMNS="NO")
 
 # Load point data
-path_to_playgrounds = 'Spielplatz.csv.csv'
+path_to_playgrounds = 'data/Spielplatz.csv'
 gdf_playgrounds = geopandas.read_file(path_to_playgrounds, GEOM_POSSIBLE_NAMES="geometry", KEEP_GEOM_COLUMNS="NO")
 
 gdf_playgrounds.plot(marker='*', color='green', markersize=5)
 # Load base map
-ch = geopandas.read_file('/Users/reka/Desktop/zurich_new/data/stzh.adm_verwaltungsquartiere_a.shp')
+ch = geopandas.read_file('data/stzh.adm_verwaltungsquartiere_a.shp')
 base = ch.plot(color='white', edgecolor='blue', figsize = (15, 10))
 
 # Plot point data on base map
@@ -31,7 +31,7 @@ plt.savefig('zurich_map.jpg')
 
 
 
-zurich = geopandas.read_file('/Users/reka/Desktop/zurich_new/data/stzh.adm_verwaltungsquartiere_a.shp')
+zurich = geopandas.read_file('data/stzh.adm_verwaltungsquartiere_a.shp')
 zurich.plot()
 plt.show()
 
