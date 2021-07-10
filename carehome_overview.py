@@ -132,3 +132,63 @@ p.add_tools(HoverTool(renderers = [plot_apartments, plot_centres, plot_stations]
 # plot, and add it to the current document
 layout = column(p)
 show(layout)
+
+
+##########################################
+### EXPERIMENTAL BIT FOR DISTANCE INFO ###
+##########################################
+
+from shapely.geometry import Point
+import geopandas as gpd
+
+# Calculation of distance between two points:
+pnt1 = Point(2683960, 1246350.9)
+pnt2 = Point (2683936, 1246410)
+points_df = gpd.GeoDataFrame({'geometry': [pnt1, pnt2]}, crs='EPSG:32632')
+points_df = points_df.to_crs('EPSG:32632')
+points_df2 = points_df.shift() #We shift the dataframe by 1 to align pnt1 with pnt2
+points_df.distance(points_df2)
+print(points_df.distance(points_df2))
+
+
+from shapely.ops import nearest_points
+
+# To add nearest point of a station to each retirement apartment
+apartments.insert(2, 'nearest_station_point', None)
+# apartments.insert(3, 'nearest_station_name', None)
+
+for index, row in apartments.iterrows():
+    point = row.geometry
+    multipoint = stations.drop(index, axis=0).geometry.unary_union
+    queried_geom, nearest_geom = nearest_points(point, multipoint)
+    apartments.loc[index, 'nearest_station_point'] = nearest_geom
+    # apartments.loc[index, 'nearest_station_name'] = geom_name
+
+print(apartments.columns)
+
+apartments.insert(3, 'distance_to_station', None)
+
+# Rename the column 'name' to 'Name' so it does not overlap with the function 'name'
+apartments.rename(columns={'name':'Name'}, inplace=True)
+
+# Print a list of apartment names and distances to nearest public transport station in meters
+# Bear in mind that point data like this is not 100% accurate, but it gives a good idea of comparative distances
+for index, row in apartments.iterrows():
+    pnt1 = row.geometry
+    pnt2 = row.nearest_station_point
+    home_name = row.Name
+    points_df = gpd.GeoDataFrame({'geometry': [pnt1, pnt2]}, crs='EPSG:32632')
+    points_df = points_df.to_crs('EPSG:32632')
+    points_df2 = points_df.shift() #We shift the dataframe by 1 to align pnt1 with pnt2
+    distance = points_df.distance(points_df2)
+    print(home_name)
+    print(distance)
+
+    # # To find the name of each station location and add these to the list of retirement apartments
+# apartments.insert(3, 'nearest_station_name', None)
+# from numpy import where
+
+# for index, row in apartments.iterrows():
+#     station_location = row.nearest_station_point
+#     match = stations.query('geometry = station_location').name
+#     apartments.loc[index, 'nearest_station_point'] = match
